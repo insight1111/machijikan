@@ -30,12 +30,12 @@ class Machi
 						shoshin:         @sh.cells(line,3).value.to_i,
 						shokaijo:        @sh.cells(line,4).value.to_i,
 						shinryoka:       @sh.cells(line,5).value.to_i,
-						shinryoka_com:   @sh.cells(line,6).value.to_i,
+						shinryoka_com:   @sh.cells(line,6).value.to_s,
 						mokuteki:        @sh.cells(line,7).value.to_i,
 						address:         @sh.cells(line,8).value.to_i
 					}
 				end
-				p @fundamental
+				# p @fundamental
 				@sheet_name=@sh.name
 			end
 		rescue => e
