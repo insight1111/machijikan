@@ -1,0 +1,10 @@
+source 'https://rubygems.org'
+gem 'bundler'
+gem 'rspec'
+gem 'guard'
+gem 'guard-rspec'
+gem 'guard-bundler'
+gem 'ruby_gntp'
+gem 'rb-fchange', :require => false
+gem 'rb-notifu'
+gem 'win32console'
