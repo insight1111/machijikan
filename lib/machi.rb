@@ -52,8 +52,7 @@ class Machi
 
   def get_sheet_object(filename)
     path=getAbsolutePath(filename)
-    book=@ex.workbooks.open(path)
-    sh=book.sheets("data")
+    sh=@ex.workbooks.open(path).sheets("data")
   end
 
   def get_last_line(sheetobject)
