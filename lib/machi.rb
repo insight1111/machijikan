@@ -35,7 +35,7 @@ class Machi
 						address:         @sh.cells(line,8).value.to_i
 					}
 				end
-				p @fundamental
+				# p @fundamental
 				@sheet_name=@sh.name
 			end
 		rescue => e
