@@ -34,7 +34,7 @@ class Machi
             shinryoka_com:   @sh.cells(line,6).value.to_s,
             mokuteki:        @sh.cells(line,7).value.to_i,
             address:         @sh.cells(line,8).value.to_i
-          }
+           }
           @machijikan_data << column_reader(@sh,line)
         end
       end
@@ -45,40 +45,43 @@ class Machi
     end
   end
 
-  def getAbsolutePath filename
-    fso = WIN32OLE.new('Scripting.FileSystemObject')
-    return fso.GetAbsolutePathName(filename)
-  end
+  private
+  
+    def getAbsolutePath filename
+      fso = WIN32OLE.new('Scripting.FileSystemObject')
+      return fso.GetAbsolutePathName(filename)
+    end
 
-  def get_sheet_object(filename)
-    path=getAbsolutePath(filename)
-    sh=@ex.workbooks.open(path).sheets("data")
-  end
+    def get_sheet_object(filename)
+      path=getAbsolutePath(filename)
+      sh=@ex.workbooks.open(path).sheets("data")
+    end
 
-  def get_last_line(sheetobject)
-    sheetobject.range("A1").end(-4121).row
-  end
+    def get_last_line(sheetobject)
+      sheetobject.range("A1").end(-4121).row
+    end
 
-  def column_reader(sheet,line)
-  	col=9
-  	return_data=[]
-  	until sheet.cells(line,col).value == nil && sheet.cells(line,col+1).value==nil && sheet.cells(line,col+2).value==nil
-  		temp_data=[]
-			(col..col+2).each do |c|
-        if sheet.cells(line,c).value
-				temp_data << convert_time(sheet.cells(line,c).value)
-        else
-        temp_data << nil
-        end
-			end
-			return_data << temp_data  			
-  		col+=3
-  	end
-    return_data
-  end
+    def column_reader(sheet,line)
+    	col=9
+    	return_data=[]
+    	until sheet.cells(line,col).value == nil && sheet.cells(line,col+1).value==nil && sheet.cells(line,col+2).value==nil
+    		temp_data=[]
+  			(col..col+2).each do |c|
+          if sheet.cells(line,c).value
+  				temp_data << convert_time(sheet.cells(line,c).value)
+          else
+          temp_data << nil
+          end
+  			end
+  			return_data << temp_data  			
+    		col+=3
+    	end
+      return_data
+    end
 
-  def convert_time(time_string)
-    # p time_string
-    Time.local(2012,12,12,time_string[0..1].to_i, time_string[2..3].to_i)
-  end
+    def convert_time(time_string)
+      # p time_string
+      Time.local(2012,12,12,time_string[0..1].to_i, time_string[2..3].to_i)
+    end
+    
 end

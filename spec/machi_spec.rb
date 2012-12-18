@@ -43,4 +43,14 @@ describe Machi do
       end
     end
   end
+
+  describe "output database" do
+    before do
+      subject.reader
+      subject.output_database
+    end
+    it "should have dataconnection" do
+      subject.database_connection.should_not be_nil
+    end
+  end
 end
