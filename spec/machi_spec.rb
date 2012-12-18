@@ -13,7 +13,7 @@ describe Machi do
       subject.data_sheet.size.should == 1
     end
     it "should have collect sheet name" do
-      subject.data_sheet[0].should =~ /ç÷ì°/
+      subject.data_sheet[0].should =~ /test/
     end
   end
 
@@ -23,13 +23,23 @@ describe Machi do
     end
     describe "should have fundamental" do
       before { subject.reader}
-      it "have patient's data" do
+      it "collect patient's data" do
         subject.fundamental[0][:code].should == "01234567"
         subject.fundamental[0][:shoshin].should == 1
         subject.fundamental[1][:code].should == "01122334"
       end
       it "data size is 2" do
         subject.fundamental.size.should == 2
+      end
+    end
+
+    describe "column reader" do
+      before { subject.reader}
+      it "should have three data" do
+        subject.machijikan_data[0].size.should == 3
+      end
+      it "should data is time format" do
+      	subject.machijikan_data[0][0][0].should be_kind_of(Time)
       end
     end
   end

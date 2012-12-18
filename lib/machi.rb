@@ -3,7 +3,7 @@ $KCODE="s"
 
 require 'win32ole'
 class Machi
-  attr_accessor :data_sheet, :data_container, :fundamental, :sh, :sheet_name
+  attr_accessor :data_sheet, :data_container, :fundamental, :sh, :sheet_name, :machijikan_data
   def initialize(options= {debug: false})
     @data_sheet=[]
     path="sheets"
@@ -13,6 +13,7 @@ class Machi
     end
     @data_container=[]
     @fundamental=[]
+    @machijikan_data=[]
     @ex=nil
     @book=nil
     @sh=nil
@@ -34,12 +35,11 @@ class Machi
             mokuteki:        @sh.cells(line,7).value.to_i,
             address:         @sh.cells(line,8).value.to_i
           }
+          @machijikan_data << column_reader(@sh,line)
         end
-        # p @fundamental
-        @sheet_name=@sh.name
       end
     rescue => e
-      print e
+      print e, $@
     ensure
       @ex.quit
     end
@@ -57,5 +57,28 @@ class Machi
 
   def get_last_line(sheetobject)
     sheetobject.range("A1").end(-4121).row
+  end
+
+  def column_reader(sheet,line)
+  	col=9
+  	return_data=[]
+  	until sheet.cells(line,col).value == nil && sheet.cells(line,col+1).value==nil && sheet.cells(line,col+2).value==nil
+  		temp_data=[]
+			(col..col+2).each do |c|
+        if sheet.cells(line,c).value
+				temp_data << convert_time(sheet.cells(line,c).value)
+        else
+        temp_data << nil
+        end
+			end
+			return_data << temp_data  			
+  		col+=3
+  	end
+    return_data
+  end
+
+  def convert_time(time_string)
+    # p time_string
+    Time.local(2012,12,12,time_string[0..1].to_i, time_string[2..3].to_i)
   end
 end
