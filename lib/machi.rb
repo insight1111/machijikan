@@ -66,7 +66,11 @@ class Machi
     	return_data=[]
     	until sheet.cells(line,col).value == nil && sheet.cells(line,col+1).value==nil && sheet.cells(line,col+2).value==nil
     		temp_data=[]
-  			(col..col+2).each do |c|
+  			(col..col+3).each do |c|
+          if c % 4 == 1
+            temp_data << sheet.cells(line,c).value.to_i
+            next
+          end
           if sheet.cells(line,c).value
   				temp_data << convert_time(sheet.cells(line,c).value)
           else
@@ -74,7 +78,7 @@ class Machi
           end
   			end
   			return_data << temp_data  			
-    		col+=3
+    		col+=4
     	end
       return_data
     end

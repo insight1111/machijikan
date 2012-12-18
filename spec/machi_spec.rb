@@ -39,8 +39,11 @@ describe Machi do
         subject.machijikan_data[0].size.should == 3
         subject.machijikan_data[1].size.should == 1
       end
-      it "should data is time format" do
-      	subject.machijikan_data[0][0][0].should be_kind_of(Time)
+      it "should firstData is integer" do
+        subject.machijikan_data[0][0][0].should be_kind_of(Integer)
+      end
+      it "should second data is time format" do
+      	subject.machijikan_data[0][0][1].should be_kind_of(Time)
       end
       it "a piece of data should have four data" do
         subject.machijikan_data[0][0].size.should == 4
