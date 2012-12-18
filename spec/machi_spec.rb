@@ -37,20 +37,24 @@ describe Machi do
       before { subject.reader}
       it "should have three data" do
         subject.machijikan_data[0].size.should == 3
+        subject.machijikan_data[1].size.should == 1
       end
       it "should data is time format" do
       	subject.machijikan_data[0][0][0].should be_kind_of(Time)
       end
+      it "a piece of data should have four data" do
+        subject.machijikan_data[0][0].size.should == 4
+      end
     end
   end
 
-  describe "output database" do
-    before do
-      subject.reader
-      subject.output_database
-    end
-    it "should have dataconnection" do
-      subject.database_connection.should_not be_nil
-    end
-  end
+  # describe "output database" do
+  #   before do
+  #     subject.reader
+  #     subject.output_database
+  #   end
+  #   it "should have dataconnection" do
+  #     subject.database_connection.should_not be_nil
+  #   end
+  # end
 end
