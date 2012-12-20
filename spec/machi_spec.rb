@@ -42,11 +42,21 @@ describe Machi do
       it "should firstData is integer" do
         subject.machijikan_data[0][0][0].should be_kind_of(Integer)
       end
-      it "should second data is time format" do
-      	subject.machijikan_data[0][0][1].should be_kind_of(Time)
+      it "should third data is time format" do
+      	subject.machijikan_data[0][0][2].should be_kind_of(Time)
       end
-      it "a piece of data should have four data" do
-        subject.machijikan_data[0][0].size.should == 4
+      # data structures
+      #   code
+      #   type(koumoku)
+      #   uketsuke
+      #   start
+      #   end
+      #   min_time...which is most early time??
+      it "a piece of data should have six data" do
+        subject.machijikan_data[0][0].size.should == 6
+      end
+      it "min_time is 9:25" do
+        subject.machijikan_data[0][0][5].should == Time.local(2012,12,12,9,25)
       end
     end
   end
