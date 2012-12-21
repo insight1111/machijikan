@@ -3,6 +3,7 @@ $KCODE="s"
 
 require 'win32ole'
 require 'pp'
+# require 'ruby-debug'
 class Machi
   attr_accessor :data_sheet, :data_container, :fundamental, :sh, :sheet_name, :machijikan_data
   def initialize(options= {debug: false})
@@ -66,6 +67,7 @@ class Machi
     	col=9
     	return_data=[]
     	until sheet.cells(line,col).value == nil && sheet.cells(line,col+1).value==nil && sheet.cells(line,col+2).value==nil
+        # debugger
     		temp_data=[sheet.cells(line,1).value.to_i]
   			(col..col+3).each do |c|
           if c % 4 == 1
@@ -77,9 +79,8 @@ class Machi
           else
           temp_data << nil
           end
-          temp_data << [temp_data[2],temp_data[3],temp_data[4]].compact.min
-          pp temp_data
   			end
+        temp_data << [temp_data[2],temp_data[3],temp_data[4]].compact.min
   			return_data << temp_data  			
     		col+=4
     	end

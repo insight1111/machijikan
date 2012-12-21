@@ -8,3 +8,5 @@ gem 'ruby_gntp'
 gem 'rb-fchange', :require => false
 gem 'rb-notifu'
 gem 'win32console'
+gem 'dbi'
+# gem 'ruby-debug'
