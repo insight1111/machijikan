@@ -47,12 +47,12 @@ describe Machi do
         subject.data_container[1][:machijikan_kiso_data].size.should == 1
       end
       it "should firstData is integer" do
-        subject.data_container[0][:machijikan_kiso_data][0][0][0].should be_kind_of(Integer)
+        subject.data_container[0][:machijikan_kiso_data][0][0].should be_kind_of(Integer)
       end
       it "should third data is time format" do
       	subject.data_container[0][:machijikan_kiso_data][0][2].should be_kind_of(Time)
       end
-      # data structures
+      # machijikan_kiso_data structures
       #   code
       #   type(koumoku)
       #   uketsuke
@@ -65,6 +65,9 @@ describe Machi do
       it "min_time is 9:25" do
         subject.data_container[0][:machijikan_kiso_data][0][5].should == Time.local(2012,12,12,9,25)
       end
+
+      #machijikan details
+      # 1..I‚í‚è-ó•t
     end
   end
 
