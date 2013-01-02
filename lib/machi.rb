@@ -1,4 +1,4 @@
-#encoding: cp932
+#encoding: utf8
 $KCODE="s"
 
 require 'win32ole'

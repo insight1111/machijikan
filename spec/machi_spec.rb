@@ -1,4 +1,4 @@
-#encoding: cp932
+#encoding: utf-8
 $KODE="s"
 
 require 'rubygems'
@@ -67,7 +67,7 @@ describe Machi do
       end
 
       #machijikan details
-      # 1..I‚í‚è-ó•t
+      # 1..çµ‚ã‚ã‚Š-å—ä»˜
     end
   end
 
