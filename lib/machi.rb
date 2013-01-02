@@ -5,7 +5,7 @@ require 'win32ole'
 require 'pp'
 # require 'ruby-debug'
 class Machi
-  attr_accessor :data_sheet, :data_container, :fundamental, :sh, :sheet_name, :machijikan_kiso_data
+  attr_accessor :data_sheet, :data_container, :sh, :sheet_name
   def initialize(options= {debug: false})
     @data_sheet=[]
     path="sheets"
@@ -27,7 +27,8 @@ class Machi
         @ex=WIN32OLE.new("Excel.Application")
         @sh=get_sheet_object(sheet)
         (2..get_last_line(@sh)).each do |line|
-          @fundamental << {
+          _data_container = {}
+          _data_container[:fundamental] = {
             code: (('00000000'+(@sh.cells(line,1)).value.to_i.to_s))[-8..-1], 
             drcode:          @sh.cells(line,2).value.to_i,
             shoshin:         @sh.cells(line,3).value.to_i,
@@ -37,7 +38,8 @@ class Machi
             mokuteki:        @sh.cells(line,7).value.to_i,
             address:         @sh.cells(line,8).value.to_i
            }
-          @machijikan_kiso_data << column_reader(@sh,line)
+          _data_container[:machijikan_kiso_data] = column_reader(@sh,line)
+          data_container << _data_container
         end
       end
     rescue => e

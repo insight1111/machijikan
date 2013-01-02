@@ -31,26 +31,26 @@ describe Machi do
     describe "should have fundamental" do
       before { subject.reader}
       it "collect patient's data" do
-        subject.fundamental[0][:code].should == "01234567"
-        subject.fundamental[0][:shoshin].should == 1
-        subject.fundamental[1][:code].should == "01122334"
+        subject.data_container[0][:fundamental][:code].should == "01234567"
+        subject.data_container[0][:fundamental][:shoshin].should == 1
+        subject.data_container[1][:fundamental][:code].should == "01122334"
       end
       it "data size is 2" do
-        subject.fundamental.size.should == 2
+        subject.data_container.size.should == 2
       end
     end
 
     describe "column reader" do
       before { subject.reader}
       it "should have three data" do
-        subject.machijikan_kiso_data[0].size.should == 3
-        subject.machijikan_kiso_data[1].size.should == 1
+        subject.data_container[0][:machijikan_kiso_data].size.should == 3
+        subject.data_container[1][:machijikan_kiso_data].size.should == 1
       end
       it "should firstData is integer" do
-        subject.machijikan_kiso_data[0][0][0].should be_kind_of(Integer)
+        subject.data_container[0][:machijikan_kiso_data][0][0][0].should be_kind_of(Integer)
       end
       it "should third data is time format" do
-      	subject.machijikan_kiso_data[0][0][2].should be_kind_of(Time)
+      	subject.data_container[0][:machijikan_kiso_data][0][2].should be_kind_of(Time)
       end
       # data structures
       #   code
@@ -60,10 +60,10 @@ describe Machi do
       #   end
       #   min_time...which is most early time??
       it "a piece of data should have six data" do
-        subject.machijikan_kiso_data[0][0].size.should == 6
+        subject.data_container[0][:machijikan_kiso_data][0].size.should == 6
       end
       it "min_time is 9:25" do
-        subject.machijikan_kiso_data[0][0][5].should == Time.local(2012,12,12,9,25)
+        subject.data_container[0][:machijikan_kiso_data][0][5].should == Time.local(2012,12,12,9,25)
       end
     end
   end
