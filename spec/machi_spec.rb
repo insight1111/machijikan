@@ -53,21 +53,61 @@ describe Machi do
       	subject.data_container[0][:machijikan_kiso_data][0][2].should be_kind_of(Time)
       end
       # machijikan_kiso_data structures
-      #   code
-      #   type(koumoku)
-      #   uketsuke
-      #   start
-      #   end
-      #   min_time...which is most early time??
+      #   0:code
+      #   1:type(koumoku)
+      #   2:uketsuke
+      #   3:start
+      #   4:end
+      #   5:min_time...which is most early time??
       it "a piece of data should have six data" do
         subject.data_container[0][:machijikan_kiso_data][0].size.should == 6
       end
       it "min_time is 9:25" do
         subject.data_container[0][:machijikan_kiso_data][0][5].should == Time.local(2012,12,12,9,25)
       end
+      it "sorted by min_time" do
+        subject.data_container[0][:machijikan_kiso_data][1][5].should == Time.local(2012,12,12,9,40)
+      end
 
-      #machijikan details
-      # 1..終わり-受付
+      # 待ち時間の定義
+      #
+      # 1...終わり-受付
+      # 3...3開始-2受付
+      # 4...4開始-直前終わり
+      # 5...5開始-直前終わり
+      # 6...6開始-6受付
+      # 71..71開始-7受付
+      # 72..72開始-71終了
+      # 73..73開始-72終了
+      # 81..81開始-8受付
+      # 82..82開始-81終了
+      # 9...9開始-9受付
+      # 10..10終了-10受付
+      # 11..11開始-11受付
+      # 12..12終了-12受付
+      # 99..滞在時間..12終了-1受付-12-13
+
+      # 待ち時間データ構造定義
+      # 
+      # code(paitent id)
+      # shinryoka(allow null)
+      # machijikan_id(above definition value)
+      # value(waiting time)
+
+      it "have machijikan" do
+        subject.data_container[0][:machijikan].should_not be_nil
+      end
+      it "a piece of machijikan_data is array and contains four data" do
+        p subject.data_container[0][:machijikan][0]
+        subject.data_container[0][:machijikan][0].should be_a_kind_of(Array)
+        subject.data_container[0][:machijikan][0].size.should == 4
+      end
+      it "machijikan first data size is 3" do
+        subject.data_container[0][:machijikan].size.should == 2
+      end
+      it "machijikan[0] first machijikan is 5" do
+        subject.data_container[0][:machijikan][0][3].should == 5
+      end
     end
   end
 
