@@ -5,7 +5,7 @@ require 'win32ole'
 require 'pp'
 # require 'ruby-debug'
 class Machi
-  attr_accessor :data_sheet, :data_container, :fundamental, :sh, :sheet_name, :machijikan_data
+  attr_accessor :data_sheet, :data_container, :fundamental, :sh, :sheet_name, :machijikan_kiso_data
   def initialize(options= {debug: false})
     @data_sheet=[]
     path="sheets"
@@ -15,7 +15,7 @@ class Machi
     end
     @data_container=[]
     @fundamental=[]
-    @machijikan_data=[]
+    @machijikan_kiso_data=[]
     @ex=nil
     @book=nil
     @sh=nil
@@ -37,7 +37,7 @@ class Machi
             mokuteki:        @sh.cells(line,7).value.to_i,
             address:         @sh.cells(line,8).value.to_i
            }
-          @machijikan_data << column_reader(@sh,line)
+          @machijikan_kiso_data << column_reader(@sh,line)
         end
       end
     rescue => e

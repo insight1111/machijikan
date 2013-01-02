@@ -5,6 +5,13 @@ require 'rubygems'
 require './spec/test_helper'
 require './lib/machi'
 
+# data structures
+# 
+# data_container[Array]
+#   fundamental:[Hash]  ... personal data[Array]
+#   machijikan_kiso_data:[Hash] ... original data[Array]
+#   machijikan:[Hash] ... culculate machijikan data[Array]
+
 describe Machi do
   subject { Machi.new(debug: true) }
 
@@ -36,14 +43,14 @@ describe Machi do
     describe "column reader" do
       before { subject.reader}
       it "should have three data" do
-        subject.machijikan_data[0].size.should == 3
-        subject.machijikan_data[1].size.should == 1
+        subject.machijikan_kiso_data[0].size.should == 3
+        subject.machijikan_kiso_data[1].size.should == 1
       end
       it "should firstData is integer" do
-        subject.machijikan_data[0][0][0].should be_kind_of(Integer)
+        subject.machijikan_kiso_data[0][0][0].should be_kind_of(Integer)
       end
       it "should third data is time format" do
-      	subject.machijikan_data[0][0][2].should be_kind_of(Time)
+      	subject.machijikan_kiso_data[0][0][2].should be_kind_of(Time)
       end
       # data structures
       #   code
@@ -53,21 +60,21 @@ describe Machi do
       #   end
       #   min_time...which is most early time??
       it "a piece of data should have six data" do
-        subject.machijikan_data[0][0].size.should == 6
+        subject.machijikan_kiso_data[0][0].size.should == 6
       end
       it "min_time is 9:25" do
-        subject.machijikan_data[0][0][5].should == Time.local(2012,12,12,9,25)
+        subject.machijikan_kiso_data[0][0][5].should == Time.local(2012,12,12,9,25)
       end
     end
   end
 
-  describe "output database" do
-    before do
-      subject.reader
-      subject.output_database
-    end
-    it "should have dataconnection" do
-      subject.database_connection.should_not be_nil
-    end
-  end
+  # describe "output database" do
+  #   before do
+  #     subject.reader
+  #     subject.output_database
+  #   end
+  #   it "should have dataconnection" do
+  #     subject.database_connection.should_not be_nil
+  #   end
+  # end
 end
