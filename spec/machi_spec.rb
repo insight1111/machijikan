@@ -119,5 +119,8 @@ describe Machi do
     it "should have dataconnection" do
       subject.db.should_not be_nil
     end
+    it "should have three fandamental data" do
+      # subject.
+    end
   end
 end
