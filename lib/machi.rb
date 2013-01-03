@@ -5,6 +5,7 @@ require 'win32ole'
 require 'pp'
 require 'debugger'
 require 'dbi'
+require 'kconv'
 
 class Machi
   attr_accessor :data_sheet, :data_container, :sh, :sheet_name, :db
@@ -44,7 +45,7 @@ class Machi
            }
           _data_container[:machijikan_kiso_data] = column_reader(@sh,line)
           _data_container[:machijikan] = calc_machijikan(_data_container[:machijikan_kiso_data],_data_container[:fundamental][:shinryoka])
-          data_container << _data_container
+          @data_container << _data_container
         end
       end
     rescue => e
@@ -55,7 +56,31 @@ class Machi
   end
 
   def output
-    
+    begin
+      @data_container.each do |d|
+        f = d[:fundamental]
+        db.do("insert into patients values(?,?,?,?,?,?,?,?);",
+          f[:code], f[:drcode], f[:shoshin], f[:shokaijo],
+          f[:shinryoka], f[:shinryoka_com], f[:mokuteki], f[:address])
+        f = d[:machijikan_kiso_data]
+        f.each do |_f|
+          db.do("insert into machijikan_kisodata (code,type,uketsuke,start,end,min_time) values(?,?,?,?,?,?);",
+            _f[0],_f[1],_f[2],_f[3],_f[4],_f[5])
+        end
+        f = d[:machijikan]
+        f.each do |_f|
+          # puts "insert into machijikan (code,shinryoka,type,timevalue) values(#{_f[0]},#{_f[1]},#{_f[2]},#{_f[3]});" 
+          db.do("insert into machijikan (code,shinryoka,type,timevalue) values(?,?,?,?);",
+            _f[0],_f[1],_f[2],_f[3])
+        end
+      end
+    rescue DBI::DatabaseError => e      
+      puts "An error occured."
+      puts "Error code: #{e.err}".tosjis
+      puts "Error message: #{e.message}".tosjis
+    ensure
+      db.disconnect if db
+    end
   end
 
   private
