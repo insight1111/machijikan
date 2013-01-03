@@ -4,8 +4,10 @@ $KCODE="s"
 require 'win32ole'
 require 'pp'
 require 'debugger'
+require 'dbi'
+
 class Machi
-  attr_accessor :data_sheet, :data_container, :sh, :sheet_name
+  attr_accessor :data_sheet, :data_container, :sh, :sheet_name, :db
   def initialize(options= {debug: false})
     @options = options
     @data_sheet=[]
@@ -20,6 +22,7 @@ class Machi
     @ex=nil
     @book=nil
     @sh=nil
+    @db=DBI.connect("DBI:ODBC:machijikan",'admin','')
   end
 
   def reader
@@ -49,6 +52,10 @@ class Machi
     ensure
       @ex.quit
     end
+  end
+
+  def output
+    
   end
 
   private
@@ -108,11 +115,12 @@ class Machi
         # debugger if @options[:debug]
         type   = m[1]
         value = 0
-
+        temp_shinryoka = nil
+        begin
         case type
         when 1
           value = m[4]-m[2]
-        when 2
+        when 2, 21..28
           shinryoka_uketsuke = m[2]
           next
         when 3 , 31..38
@@ -153,7 +161,7 @@ class Machi
         end
 
         if type >= 31
-          shinryoka = get_shinryoka(type)
+          temp_shinryoka = get_shinryoka(type)
         end
 
         code = m[0]
@@ -163,7 +171,10 @@ class Machi
 
         # puts "#{i}:#{value.to_s}"
         value = (value / 60).to_i if value 
-        return_data << [code, shinryoka, type, value]
+        return_data << [code, (temp_shinryoka || shinryoka), type, value]
+      rescue
+        next
+      end
       end
       return_data
     end

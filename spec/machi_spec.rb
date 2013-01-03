@@ -35,8 +35,8 @@ describe Machi do
         subject.data_container[0][:fundamental][:shoshin].should == 1
         subject.data_container[1][:fundamental][:code].should == "01122334"
       end
-      it "data size is 2" do
-        subject.data_container.size.should == 2
+      it "data size is 3" do
+        subject.data_container.size.should == 3
       end
     end
 
@@ -111,13 +111,13 @@ describe Machi do
     end
   end
 
-  # describe "output database" do
-  #   before do
-  #     subject.reader
-  #     subject.output_database
-  #   end
-  #   it "should have dataconnection" do
-  #     subject.database_connection.should_not be_nil
-  #   end
-  # end
+  describe "output database" do
+    before do
+      subject.reader
+      subject.output
+    end
+    it "should have dataconnection" do
+      subject.db.should_not be_nil
+    end
+  end
 end
