@@ -185,12 +185,13 @@ class Machi
           value = m[4] - m[2]
         end
 
-        if type >= 31
+        if type.between?(31,58)
           temp_shinryoka = get_shinryoka(type)
         end
 
         code = m[0]
-        if !(type.between?(10,12))
+        
+        if type.between?(31,58)
           type = type.to_s[0].to_i
         end
 
