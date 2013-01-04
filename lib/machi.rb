@@ -131,12 +131,12 @@ class Machi
     def calc_machijikan(machijikan, shinryoka)
       return_data = []
       sogo_uketsuke          = nil
-      shinryoka_uketsuke     = 0
-      naishikyo_uketsuke     = 0
-      naishikyo_monshin_end  = 0
-      naishikyo_shochi_end   = 0
-      gazo_uketsuke          = 0
-      gazo_shochi_end        = 0
+      shinryoka_uketsuke     = nil
+      naishikyo_uketsuke     = nil
+      naishikyo_monshin_end  = nil
+      naishikyo_shochi_end   = nil
+      gazo_uketsuke          = nil
+      gazo_shochi_end        = nil
       shiharai_end           = nil
       machijikan.each_with_index do |m,i|
         # debugger if @options[:debug]
