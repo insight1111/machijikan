@@ -1,5 +1,5 @@
 #encoding: utf-8
-$KODE="s"
+$KODE="u"
 
 require 'rubygems'
 require './spec/test_helper'

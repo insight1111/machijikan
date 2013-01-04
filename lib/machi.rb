@@ -1,4 +1,18 @@
 #encoding: cp932
+
+# 待ち時間集計プログラム
+# bundle install してから使用してください
+# 一部コンパイル・ビルドが必要な物があります
+# sheets_testフォルダに集計したいExcelを入れてから
+# calc_machi.rbを実行してください。
+
+# データ構造について
+# 
+# data_container[Array]
+#   fundamental:[Hash]  ... 患者個人data[Array]
+#   machijikan_kiso_data:[Hash] ... 記入シートそのままの時間[Array]
+#   machijikan:[Hash] ... 待ち時間のみの集計データ[Array]
+
 $KCODE="s"
 
 require 'win32ole'
@@ -26,13 +40,16 @@ class Machi
     @db=DBI.connect("DBI:ODBC:machijikan",'admin','')
   end
 
+  # エクセルシートから情報を読み取り
   def reader
     begin
       @data_sheet.each do |sheet|
         @ex=WIN32OLE.new("Excel.Application")
         @sh=get_sheet_object(sheet)
+        puts @book.name
         (2..get_last_line(@sh)).each do |line|
           _data_container = {}
+          # 患者基礎データ取得
           _data_container[:fundamental] = {
             code: (('00000000'+(@sh.cells(line,1)).value.to_i.to_s))[-8..-1], 
             drcode:          @sh.cells(line,2).value.to_i,
@@ -43,18 +60,22 @@ class Machi
             mokuteki:        @sh.cells(line,7).value.to_i,
             address:         @sh.cells(line,8).value.to_i
            }
+          # 待ち時間表データ取得
           _data_container[:machijikan_kiso_data] = column_reader(@sh,line)
+          # 待ち時間計算後データ取得
           _data_container[:machijikan] = calc_machijikan(_data_container[:machijikan_kiso_data],_data_container[:fundamental][:shinryoka])
           @data_container << _data_container
         end
+        @book.close
       end
     rescue => e
       print e.message
     ensure
-      @ex.quit
+      @book.close
     end
   end
 
+  # データベースに出力する
   def output
     begin
       @data_container.each do |d|
@@ -85,20 +106,26 @@ class Machi
 
   private
   
+    # ファイル名から絶対パスを取得（WSH使用)
     def getAbsolutePath filename
       fso = WIN32OLE.new('Scripting.FileSystemObject')
       return fso.GetAbsolutePathName(filename)
     end
 
+    # ファイル名からexcelのオブジェクトを取得
     def get_sheet_object(filename)
       path=getAbsolutePath(filename)
-      sh=@ex.workbooks.open(path).sheets("data")
+      @book=@ex.workbooks.open(path)
+      sh=@book.sheets("data")
     end
 
+    # excelシートを引数に取り、そのシートの最終行を取得
+    # -4121 -> xlDown
     def get_last_line(sheetobject)
       sheetobject.range("A1").end(-4121).row
     end
 
+    # 実際にシートを一行ずつ（患者一人ずつ）パースしていく
     def column_reader(sheet,line)
     	col=9
     	return_data=[]
@@ -123,6 +150,7 @@ class Machi
       return_data.sort{|a,b| a[5] <=> b[5]}
     end
 
+    # 0924などの4桁の文字列からTimeオブジェクトを作成
     def convert_time(time_string)
       # p time_string
       Time.local(2012,12,12,time_string[0..1].to_i, time_string[2..3].to_i)
@@ -144,6 +172,8 @@ class Machi
         value = 0
         temp_shinryoka = nil
         begin
+
+        # それぞれの詳細はspecファイルを参照
         case type
         when 1
           value = m[4]-m[2]
@@ -175,6 +205,7 @@ class Machi
           next
         when 81, 811 .. 814
           value = (m[3] || m[2]) - gazo_uketsuke
+          # 画像に関してだけは同一カテゴリのものだけ参照させる
           case type
             when 81
             gazo_shochi_end[0]=m[4]
@@ -182,6 +213,7 @@ class Machi
             gazo_shochi_end[type.to_s[2].to_i]=m[4]
           end
         when 82, 821 .. 824
+          # 同一カテゴリの前処置完了時間を参照
           case type
           when 82
             value = (m[3] || m[2]) - (gazo_shochi_end[0] || gazo_uketsuke)
@@ -199,33 +231,33 @@ class Machi
           shiharai_end = m[4]
         end
 
+        # 診療科附属コードが付いているときは臨時診療科コードをつける
         if type.between?(31,58)
           temp_shinryoka = get_shinryoka(type)
         end
 
         code = m[0]
         
+        # 問診～処置は診療科コードをつけていても無視
         if type.between?(31,58)
           type = type.to_s[0].to_i
         end
 
         # puts "#{i}:#{value.to_s}"
+        # 時間計算後は秒単位になっているため、分になおす
         value = (value / 60).to_i if value 
+
         return_data << [code, (temp_shinryoka || shinryoka), type, value]
       rescue
         next
       end
       end
+      # 最後に病院滞在時間（コード99）を計算
       return_data << [machijikan[0][0], nil, 99, ((shiharai_end - sogo_uketsuke) / 60).to_i] if shiharai_end && sogo_uketsuke  
       return_data
     end
 
     def get_shinryoka(type)
-      case 
-      when type > 800 
-        type.to_s[2].to_i
-      else
-        type.to_s[1].to_i
-      end
+      type.to_s[1].to_i
     end
 end
