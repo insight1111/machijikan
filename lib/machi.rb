@@ -136,7 +136,7 @@ class Machi
       naishikyo_monshin_end  = nil
       naishikyo_shochi_end   = nil
       gazo_uketsuke          = nil
-      gazo_shochi_end        = nil
+      gazo_shochi_end        = []
       shiharai_end           = nil
       machijikan.each_with_index do |m,i|
         # debugger if @options[:debug]
@@ -152,40 +152,50 @@ class Machi
           shinryoka_uketsuke = m[2]
           next
         when 3 , 31..38
-          value = m[3]-shinryoka_uketsuke
+          value = (m[3] || m[2])-shinryoka_uketsuke
         when 4 , 41..48
-          value = m[3]-machijikan[i-1][4]
+          value = (m[3] || m[2])-machijikan[i-1][4]
         when 5 , 51..58
-          value = m[3]-machijikan[i-1][4]
+          value = (m[3] || m[2])-machijikan[i-1][4]
         when 6 , 61..62
           value = m[3]-m[2]
         when 7
           naishikyo_uketsuke = m[2]
           next
         when 71
-          value = m[3] - naishikyo_uketsuke
+          value = (m[3] || m[2]) - naishikyo_uketsuke
           naishikyo_monshin_end = m[4]
         when 72
-          value = m[3] - naishikyo_monshin_end
+          value = (m[3] || m[2]) - naishikyo_monshin_end
           naishikyo_shochi_end = m[4]
         when 73
-          value = m[3] - naishikyo_shochi_end
+          value = (m[3] || m[2]) - naishikyo_shochi_end
         when 8
           gazo_uketsuke = m[2]
           next
-        when 81, 810 .. 814
-          value = m[3] - gazo_uketsuke
-          gazo_shochi_end = m[4]
-        when 82, 820 .. 824
-          value = m[3] - gazo_shochi_end
+        when 81, 811 .. 814
+          value = (m[3] || m[2]) - gazo_uketsuke
+          case type
+            when 81
+            gazo_shochi_end[0]=m[4]
+            when 811..814
+            gazo_shochi_end[type.to_s[2].to_i]=m[4]
+          end
+        when 82, 821 .. 824
+          case type
+          when 82
+            value = (m[3] || m[2]) - (gazo_shochi_end[0] || gazo_uketsuke)
+          when 821..824
+            value = (m[3] || m[2]) - (gazo_shochi_end[type.to_s[2].to_i] || gazo_uketsuke)
+          end
         when 9
           value = m[3] - m[2]
         when 10
-          value = m[4] - m[2]
+          value = m[4] - (m[2] || m[3])
         when 11
           value = m[3] - m[2]
         when 12
-          value = m[4] - m[2]
+          value = m[4] - (m[2] || m[3])
           shiharai_end = m[4]
         end
 
