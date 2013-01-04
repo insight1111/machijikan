@@ -130,12 +130,14 @@ class Machi
     
     def calc_machijikan(machijikan, shinryoka)
       return_data = []
+      sogo_uketsuke          = nil
       shinryoka_uketsuke     = 0
       naishikyo_uketsuke     = 0
       naishikyo_monshin_end  = 0
       naishikyo_shochi_end   = 0
       gazo_uketsuke          = 0
       gazo_shochi_end        = 0
+      shiharai_end           = nil
       machijikan.each_with_index do |m,i|
         # debugger if @options[:debug]
         type   = m[1]
@@ -145,6 +147,7 @@ class Machi
         case type
         when 1
           value = m[4]-m[2]
+          sogo_uketsuke = m[2]
         when 2, 21..28
           shinryoka_uketsuke = m[2]
           next
@@ -183,6 +186,7 @@ class Machi
           value = m[3] - m[2]
         when 12
           value = m[4] - m[2]
+          shiharai_end = m[4]
         end
 
         if type.between?(31,58)
@@ -202,6 +206,7 @@ class Machi
         next
       end
       end
+      return_data << [machijikan[0][0], nil, 99, ((shiharai_end - sogo_uketsuke) / 60).to_i] if shiharai_end && sogo_uketsuke  
       return_data
     end
 
